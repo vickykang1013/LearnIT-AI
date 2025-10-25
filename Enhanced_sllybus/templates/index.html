@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyPlan AI - Smart Syllabus Scheduler</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>StudyPlan AI</h1>
+            </div>
+            <p class="tagline">Transform your syllabus into a personalized study schedule with videos & quizzes</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Input Section -->
+            <section class="input-card">
+                <h2><i class="fas fa-upload"></i> Upload Your Syllabus</h2>
+                
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="fileInput" accept=".pdf,.txt,.md" hidden>
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <p class="upload-text">
+                        <span class="primary-text">Drop your syllabus here or click to browse</span>
+                        <span class="secondary-text">Supports PDF, TXT, MD files</span>
+                    </p>
+                </div>
+
+                <div class="or-divider">
+                    <span>OR</span>
+                </div>
+
+                <div class="text-input-area">
+                    <label for="syllabusText">Paste Syllabus Text:</label>
+                    <textarea id="syllabusText" placeholder="Paste your course syllabus, topics, and learning objectives here..."></textarea>
+                </div>
+
+                <div class="options-grid">
+                    <div class="option-group">
+                        <label for="duration">
+                            <i class="fas fa-calendar-week"></i> Course Duration
+                        </label>
+                        <select id="duration">
+                            <option value="4">4 weeks</option>
+                            <option value="8">8 weeks</option>
+                            <option value="10" selected>10 weeks</option>
+                            <option value="12">12 weeks</option>
+                            <option value="16">16 weeks</option>
+                        </select>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label for="startDate">
+                            <i class="fas fa-calendar-day"></i> Start Date
+                        </label>
+                        <input type="date" id="startDate">
+                    </div>
+                </div>
+
+                <button id="generateBtn" class="btn-primary">
+                    <i class="fas fa-magic"></i> Generate Study Plan
+                </button>
+            </section>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Creating your personalized study plan...</p>
+                <small>This may take a few moments</small>
+            </div>
+
+            <!-- Results Section -->
+            <section id="resultsSection" class="results-section" style="display: none;">
+                <!-- Stats Overview -->
+                <div class="stats-overview">
+                    <div class="stat-card">
+                        <i class="fas fa-calendar-check"></i>
+                        <div>
+                            <span class="stat-value" id="totalWeeks">0</span>
+                            <span class="stat-label">Weeks</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <span class="stat-value" id="totalHours">0</span>
+                            <span class="stat-label">Study Hours</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-video"></i>
+                        <div>
+                            <span class="stat-value" id="totalVideos">0</span>
+                            <span class="stat-label">Video Resources</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-question-circle"></i>
+                        <div>
+                            <span class="stat-value" id="totalQuizzes">0</span>
+                            <span class="stat-label">Quiz Questions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn-secondary" onclick="exportCalendar()">
+                        <i class="fas fa-download"></i> Export to Calendar
+                    </button>
+                    <button class="btn-secondary" onclick="printSchedule()">
+                        <i class="fas fa-print"></i> Print Schedule
+                    </button>
+                    <button class="btn-secondary" onclick="shareSchedule()">
+                        <i class="fas fa-share-alt"></i> Share
+                    </button>
+                </div>
+
+                <!-- Schedule Display -->
+                <div id="scheduleContainer" class="schedule-container">
+                    <!-- Schedule will be dynamically inserted here -->
+                </div>
+
+                <!-- Quiz Modal -->
+                <div id="quizModal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <span class="close-modal" onclick="closeQuiz()">&times;</span>
+                        <h3><i class="fas fa-brain"></i> Quick Quiz</h3>
+                        <div id="quizContent">
+                            <!-- Quiz questions will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Progress Tracker (Fixed) -->
+        <div class="progress-tracker" id="progressTracker" style="display: none;">
+            <h4>Your Progress</h4>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <p class="progress-text"><span id="progressPercent">0</span>% Complete</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
