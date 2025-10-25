@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StudyBuddy - AI Study Chatbot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>📚 StudyBuddy</h1>
+    <p>Your friendly AI tutor! Ask me to explain any topic.</p>
+
+    <div class="difficulty-select">
+      <label>Difficulty:</label>
+      <select id="difficulty">
+        <option value="child">Like I'm 5</option>
+        <option value="high school" selected>High School</option>
+        <option value="college">College</option>
+      </select>
+    </div>
+
+    <div id="chatbox" class="chatbox">
+      <div class="message bot welcome">
+        👋 Hi! I'm StudyBuddy. Ask me anything you'd like to learn about!
+      </div>
+    </div>
+
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="Ask me anything..." />
+      <button onclick="sendMessage()" id="send-btn">Send</button>
+    </div>
+    
+    <div class="footer">
+      <small>Powered by Hugging Face 🤗</small>
+    </div>
+  </div>
+
+  <script>
+    const chatbox = document.getElementById("chatbox");
+    const userInputField = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-btn");
+
+    // Allow sending message with Enter key
+    userInputField.addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        sendMessage();
+      }
+    });
+
+    async function sendMessage() {
+      const userInput = userInputField.value.trim();
+      const difficulty = document.getElementById("difficulty").value;
+
+      if (!userInput) return;
+
+      // Disable input while processing
+      userInputField.disabled = true;
+      sendBtn.disabled = true;
+
+      // Display user message
+      const userMessage = document.createElement("div");
+      userMessage.className = "message user";
+      userMessage.innerText = userInput;
+      chatbox.appendChild(userMessage);
+      chatbox.scrollTop = chatbox.scrollHeight;
+
+      // Clear input
+      userInputField.value = "";
+
+      // Loading bubble
+      const botMessage = document.createElement("div");
+      botMessage.className = "message bot";
+      botMessage.innerHTML = "<em>🤔 Thinking...</em>";
+      chatbox.appendChild(botMessage);
+      chatbox.scrollTop = chatbox.scrollHeight;
+
+      try {
+        // Send to backend
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userInput, difficulty })
+        });
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
+        const data = await res.json();
+
+        // Display bot reply
+        botMessage.innerHTML = data.reply.replace(/\n/g, '<br>');
+        chatbox.scrollTop = chatbox.scrollHeight;
+      } catch (error) {
+        botMessage.innerHTML = "❌ Failed to get response. Please check your connection and try again.";
+        console.error("Error:", error);
+      } finally {
+        // Re-enable input
+        userInputField.disabled = false;
+        sendBtn.disabled = false;
+        userInputField.focus();
+      }
+    }
+  </script>
+</body>
+</html>
