@@ -1,4 +1,4 @@
-# 📚 StudyPlan AI - Smart Syllabus Scheduler
+# 📚 LearnIt AI - Smart Syllabus Scheduler
 
 Transform your course syllabus into a personalized, AI-powered study schedule complete with YouTube video resources and interactive quizzes!
 
@@ -25,7 +25,7 @@ Transform your course syllabus into a personalized, AI-powered study schedule co
 1. **Clone the repository**
 ```bash
 git clone <your-repo>
-cd studyplan-ai
+cd learnit-ai
 ```
 
 2. **Install dependencies**
@@ -54,7 +54,7 @@ http://localhost:5000
 1. **Upload Your Syllabus**
    - Drag and drop a PDF file OR
    - Click to browse and select a file OR
-   - Paste syllabus text directly
+   <!-- - Paste syllabus text directly -->
 
 2. **Configure Settings**
    - Select course duration (4-16 weeks)
